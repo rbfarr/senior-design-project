@@ -1,0 +1,23 @@
+set_global_assignment -entity "Camera_Interface" -library "Camera_Interface" -name IP_TOOL_NAME "Qsys"
+set_global_assignment -entity "Camera_Interface" -library "Camera_Interface" -name IP_TOOL_VERSION "13.0sp1"
+set_global_assignment -entity "Camera_Interface" -library "Camera_Interface" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -library "Camera_Interface" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../Camera_Interface.sopcinfo"]
+set_instance_assignment -entity "Camera_Interface" -library "Camera_Interface" -name SLD_INFO "QSYS_NAME Camera_Interface HAS_SOPCINFO 1 GENERATION_ID 1424210093"
+set_global_assignment -library "Camera_Interface" -name MISC_FILE [file join $::quartus(qip_path) "../../Camera_Interface.cmp"]
+set_global_assignment -name SYNTHESIS_ONLY_QIP ON
+set_global_assignment -library "Camera_Interface" -name MISC_FILE [file join $::quartus(qip_path) "../../Camera_Interface.qsys"]
+
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "Camera_Interface.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_reset_controller.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_reset_synchronizer.v"]
+set_global_assignment -library "Camera_Interface" -name SDC_FILE [file join $::quartus(qip_path) "submodules/altera_reset_controller.sdc"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/CCD_avalon_interface.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/CCD_Capture.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/I2C_CCD_Config.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/I2C_Controller.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/RAW2RGB.v"]
+set_global_assignment -library "Camera_Interface" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/Reset_Delay.v"]
+
+set_global_assignment -entity "altera_reset_controller" -library "Camera_Interface" -name IP_TOOL_NAME "altera_reset_controller"
+set_global_assignment -entity "altera_reset_controller" -library "Camera_Interface" -name IP_TOOL_VERSION "13.0"
+set_global_assignment -entity "altera_reset_controller" -library "Camera_Interface" -name IP_TOOL_ENV "Qsys"
