@@ -1,0 +1,27 @@
+	component Camera_Interface is
+		port (
+			clk_clk                                  : in  std_logic                     := 'X';             -- clk
+			reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
+			trdb_d5m_camera_0_ccd_pixclk_clk         : in  std_logic                     := 'X';             -- clk
+			trdb_d5m_camera_0_orst_0_reset           : out std_logic;                                        -- reset
+			trdb_d5m_camera_0_orst_2_reset           : out std_logic;                                        -- reset
+			trdb_d5m_camera_0_orst_1_reset           : out std_logic;                                        -- reset
+			trdb_d5m_camera_0_idata_export           : in  std_logic_vector(11 downto 0) := (others => 'X'); -- export
+			trdb_d5m_camera_0_iend_export            : in  std_logic                     := 'X';             -- export
+			trdb_d5m_camera_0_iflval_ifval           : in  std_logic                     := 'X';             -- ifval
+			trdb_d5m_camera_0_iflval_ilval           : in  std_logic                     := 'X';             -- ilval
+			trdb_d5m_camera_0_istart_export          : in  std_logic                     := 'X';             -- export
+			trdb_d5m_camera_0_zoom_mode_export       : in  std_logic                     := 'X';             -- export
+			trdb_d5m_camera_0_rgb_ored               : out std_logic_vector(11 downto 0);                    -- ored
+			trdb_d5m_camera_0_rgb_ogreen             : out std_logic_vector(11 downto 0);                    -- ogreen
+			trdb_d5m_camera_0_rgb_oblue              : out std_logic_vector(11 downto 0);                    -- oblue
+			trdb_d5m_camera_0_odval_export           : out std_logic;                                        -- export
+			trdb_d5m_camera_0_oycont_export          : out std_logic_vector(15 downto 0);                    -- export
+			trdb_d5m_camera_0_oframe_export          : out std_logic_vector(31 downto 0);                    -- export
+			trdb_d5m_camera_0_exposure_adjust_adj    : in  std_logic                     := 'X';             -- adj
+			trdb_d5m_camera_0_exposure_adjust_dec_p  : in  std_logic                     := 'X';             -- dec_p
+			trdb_d5m_camera_0_i2c_configuration_sclk : out std_logic;                                        -- sclk
+			trdb_d5m_camera_0_i2c_configuration_sdat : out std_logic                                         -- sdat
+		);
+	end component Camera_Interface;
+
