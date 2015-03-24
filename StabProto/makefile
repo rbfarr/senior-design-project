@@ -1,13 +1,10 @@
 CC:=g++
 LIBS:=`pkg-config --libs opencv`
 INCLUDE:=`pkg-config --cflags opencv`
-OBJECTS:=sobel-gradients.o
+SRCS:=motion-estimation.cpp motion-compensation.cpp vidstab.cpp
 
-sobel-gradients:$(OBJECTS) 
-	$(CC) $(OBJECTS) -o sobel-gradients $(LIBS)
-
-sobel-gradients.o: sobel-gradients.cpp
-	$(CC) $(INCLUDE) -c sobel-gradients.cpp -o sobel-gradients.o
+vidstab:$(SRCS) 
+	$(CC) -o vidstab $(SRCS) $(LIBS)
 
 clean:
-	rm -f *.o sobel-gradients
+	rm -f *.o vidstab
