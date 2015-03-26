@@ -22,22 +22,14 @@ int main(int argc, char* argv[]) {
     exit(0);
   }
 
-  Mat ang_mat = Mat::zeros(prev_frame.rows, prev_frame.cols, CV_32F);
-  Mat mag_mat = Mat::zeros(prev_frame.rows, prev_frame.cols, CV_32F);
-
-  // [][][0] = ang
-  // [][][1] = mag
-  Scalar means[NUM_DIVS][NUM_DIVS][2];
-  Scalar prev_means[NUM_DIVS][NUM_DIVS][2];
-  Scalar avg_means[NUM_DIVS][NUM_DIVS][2];
-  Scalar prev_avg_means[NUM_DIVS][NUM_DIVS][2];
-
-  Scalar diffs[NUM_DIVS][NUM_DIVS][2];
+  Mat prev_gradient = frame.clone();
+  cvtColor(prev_gradient, prev_gradient, CV_RGB2GRAY);
+  prev_gradient.convertTo(prev_gradient, CV_32FC1);
 
   for(;;) {
-    Mat motion_frame;
+    Mat comp_frame;
 
-    prev_frame = frame.clone();
+    //prev_frame = frame.clone();
 
     // read the capture into a frame
     bool rSuccess = capture.read(frame);
@@ -46,13 +38,11 @@ int main(int argc, char* argv[]) {
       break;
     }
     
-    motion_frame = estimateMotion(&frame, &prev_frame, means, avg_means, diffs);
-
-    compensateMotion(&motion_frame, diffs);
+    comp_frame = estimateMotion(&frame, &prev_gradient);
 
     // display the current frame
-    //imshow("motion_frame", motion_frame);
     imshow("frame", frame);
+    imshow("comp_frame", comp_frame);
 
     if(waitKey(30) >= 0) break;
   }

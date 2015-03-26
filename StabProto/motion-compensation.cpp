@@ -3,24 +3,15 @@
 using namespace cv;
 using namespace std;
 
-void compensateMotion(Mat* frame, Scalar diffs[][NUM_DIVS][2]) {
+void compensateMotion(Mat* frame, double x, double y) {
   // filtered by median motion (frame motion vs. frame action)
   // TODO: How do we do this without warpAffine?
 
-  Scalar global_disp; 
-  global_disp = getGlobalMotion(frame, diffs); 
-
-  Scalar weighted_disp;
-  weighted_disp = weighMotion(global_disp, diffs);
-
-  // x - weighted_disp[0]
-  // y - weighted_disp[1]
-  Mat warp_mat = ( Mat_<double>(2, 3) << 1, 0, 0, 0, 1, (1*weighted_disp[1]) );
-  warpAffine(*frame, *frame, warp_mat, Size(frame->cols, frame->rows), WARP_INVERSE_MAP);
-  
-  //cout << "\r" << weighted_disp << flush;
+  Mat warp_mat = ( Mat_<double>(2, 3) << 1, 0, x, 0, 1, y);
+  warpAffine(*frame, *frame, warp_mat, Size(frame->cols, frame->rows));
 }
 
+/*
 Scalar weighMotion(Scalar global_disp, Scalar diffs[][NUM_DIVS][2]) {
   
   // keep a running count of acceptable LMVs
@@ -60,3 +51,4 @@ Scalar weighMotion(Scalar global_disp, Scalar diffs[][NUM_DIVS][2]) {
   // how much to warp the image by
   return global_disp / (double)valid_lmv;
 }
+*/
