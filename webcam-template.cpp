@@ -25,6 +25,7 @@ int main() {
     // ---------------------------------//
     // insert code manipulating frame here
     // ---------------------------------//
+    cvtColor(frame, frame, CV_RGB2GRAY);
 
     // display the current frame
     imshow("default webcam", frame);
