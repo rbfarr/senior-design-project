@@ -3,10 +3,12 @@
 using namespace cv;
 using namespace std;
 
+//Point2d phase_diff[NUM_DIVS][NUM_DIVS];
 Point2d phase_diff = Point2d(0);
+Point2d phase_diff2 = Point2d(0);
 
 // returns frame offset for compensation
-Mat estimateMotion(Mat* frame, Mat* prev_gradient) {
+Mat estimateMotion(Mat* frame, Mat* unstab, Mat* prev_gradient, int return_rate, int stab, int disp_grad) {
 
   Mat gradX, gradY;
   Mat frame_bw;
@@ -24,18 +26,24 @@ Mat estimateMotion(Mat* frame, Mat* prev_gradient) {
   int wdiv = frame->cols/NUM_DIVS;
 
   Mat cropped[NUM_DIVS][NUM_DIVS];
+  Mat orig_cropped[NUM_DIVS][NUM_DIVS];
+
   Mat prev_cropped;
   Rect crop;
 
-  Mat comp_frame = frame_bw.clone();
+  Mat comp_frame = (*frame).clone();
+
+  frame->copyTo((*unstab));
 
   for(int h = 0; h < NUM_DIVS; h++) {
     for(int w = 0; w < NUM_DIVS; w++) {
       // crop frame
       crop = Rect(w*wdiv, h*hdiv, wdiv, hdiv);
+
+      orig_cropped[h][w] = Mat(*frame, crop);
       cropped[h][w] = Mat(frame_bw, crop);
+
       prev_cropped = Mat(*prev_gradient, crop);
-      //prev_cropped = *prev_gradient;
 
       // Sobel operators - X & Y
       Sobel(cropped[h][w], gradX, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
@@ -54,18 +62,46 @@ Mat estimateMotion(Mat* frame, Mat* prev_gradient) {
       gradient.convertTo(gradient, CV_32FC1);
 
       Point2d _phase_diff = Point2d(0);
-      _phase_diff = phaseCorrelate(gradient, prev_cropped); 
+      
+      if(stab){
+        _phase_diff = phaseCorrelate(gradient, prev_cropped);
+      }
+      
+      phase_diff = phase_diff * ((float)(100 - return_rate)/100); // Return rate defined in percents. Divide by 100
+      
       phase_diff += _phase_diff;
-      cout << "\rPhase diff: " << phase_diff << flush;
-
-      Mat warp_mat = ( Mat_<double>(2, 3) << 1, 0, phase_diff.x, 0, 1, phase_diff.y);
-      warpAffine(cropped[h][w], cropped[h][w], warp_mat, Size(frame->cols, frame->rows));
+      cout << "\r                                                                         " << flush;
+      cout << "\rPhase diff:\t[" << phase_diff.x << ",\t" << phase_diff.y << "]" << flush;
 
       // reassemble frame 
-      *prev_gradient = gradient;
-      cropped[h][w].copyTo( comp_frame(Rect(w*wdiv, h*hdiv, wdiv, hdiv) ));
+      Rect roi = Rect(w*wdiv, h*hdiv, wdiv, hdiv);
+      
+      gradient.copyTo((*prev_gradient)(roi));
+      
+      if(stab){
+        Mat warp_mat = ( Mat_<double>(2, 3) << 1, 0, phase_diff.x, 0, 1, phase_diff.y);
+        if(disp_grad){
+          warpAffine(gradient, gradient, warp_mat, Size(frame->cols, frame->rows));
+        } else {
+          warpAffine(orig_cropped[h][w], orig_cropped[h][w], warp_mat, Size(frame->cols, frame->rows));
+        }
+      }
+      
+
+      //*prev_gradient = gradient;
+
+      if(disp_grad){
+        Mat conversion;
+        gradient.convertTo(conversion, comp_frame.type() );
+        Mat temp[] = {conversion, conversion, conversion};
+        merge(temp, 3, comp_frame(roi));
+      } else {
+        orig_cropped[h][w](roi).copyTo( comp_frame(roi) );
+      }
+      
     }
   }
+
   return comp_frame;
 }
 

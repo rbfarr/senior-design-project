@@ -20,6 +20,6 @@ using namespace std;
 extern Point2d phase_diff;
 
 // returned Scalars represent x and y components of motion
-Mat estimateMotion(Mat*, Mat*);
+Mat estimateMotion(Mat*, Mat*, Mat*, int, int, int);
 //Scalar getGlobalMotion(Mat*, Scalar[][NUM_DIVS][2]);
 void compensateMotion(Mat*, double x, double y);
